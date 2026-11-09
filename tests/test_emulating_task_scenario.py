@@ -37,8 +37,8 @@ def test_full_scenario(capsys):
     parser.view_command("VIEW", ["ORDERS"])
     out = capsys.readouterr().out.strip().splitlines()
     assert out[-5] == "1. SNAP LMT BUY $30.0 100 20/100 PARTIAL"
-    assert out[-4] == "2. FB MKT BUY $20.0 20 20/20 FILLED"
-    assert out[-3] == "3. FB LMT SELL $20.0 20 20/20 FILLED"
+    assert out[-4] == "2. FB MKT BUY $None 20 0/20 CANCELLED"
+    assert out[-3] == "3. FB LMT SELL $20.0 20 0/20 PENDING"
     assert out[-2] == "4. SNAP LMT SELL $30.0 20 20/20 FILLED"
     assert out[-1] == "5. SNAP LMT SELL $31.0 10 0/10 PENDING"
 

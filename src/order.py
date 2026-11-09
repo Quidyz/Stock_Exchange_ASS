@@ -15,6 +15,7 @@ class OrderStatus(Enum):
     PENDING = 'PENDING'
     PARTIAL = 'PARTIAL'
     FILLED = 'FILLED'
+    CANCELLED = 'CANCELLED'
 
 # простой вариант счетчика
 _id_counter = itertools.count(1)
