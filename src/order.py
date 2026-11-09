@@ -1,4 +1,5 @@
 import itertools
+import math
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -44,8 +45,9 @@ class Order:
         if self.quantity <= 0:
             raise ValueError("Количество должно быть положительным.")
 
-        if self.action_type == ActionType.LIMIT and (self.price is None or self.price <= 0):
-            raise ValueError("Для лимитной заявки цена должна быть указана.")
+        if self.action_type == ActionType.LIMIT:
+            if self.price is None or not math.isfinite(self.price) or self.price <= 0:
+                raise ValueError("Цена лимитной заявки должна быть конечной и положительной.")
 
         if self.action_type == ActionType.MARKET and self.price is not None:
             raise ValueError("Для рыночной заявки цена не нужна.")

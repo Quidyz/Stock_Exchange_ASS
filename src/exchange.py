@@ -21,10 +21,13 @@ class Exchange:
             quantity=quantity
         )
 
-        self.orders_list[order.id] = order
         book = self._get_or_create_order(stock)
-        book.process_order(order)
-
+        self.orders_list[order.id] = order
+        try:
+            book.process_order(order)
+        except Exception:
+            del self.orders_list[order.id]
+            raise
         return order
 
     def get_sorted_orders_list(self):

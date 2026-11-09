@@ -13,6 +13,8 @@ class Parser:
         }
 
     def _command_parser(self, user_input: list) -> tuple:
+        if not user_input:
+            raise ValueError("Укажите тикер и параметры заявки.")
         stock = user_input[0]
 
         match user_input[1:]:
@@ -57,8 +59,13 @@ class Parser:
             print(msg)
         except (ValueError, TypeError) as e:
             print(f'Ошибка - {e}')
+        except RuntimeError as e:
+            print(f'Ошибка обработки заявки - {e}')
 
     def quote_command(self, action, parts):
+        if len(parts) != 1:
+            print("Формат команды: QUOTE <тикер>")
+            return
         stock = parts[0]
         if stock not in self.core.books:
             print(f"Акция - {stock}. Сейчас отсутствует на рынке.")
@@ -80,7 +87,7 @@ class Parser:
                 return
 
             for i, order in enumerate(sorted_list, 1):
-                price = order.execution_price if order.execution_price else order.price
+                price = order.execution_price if order.execution_price is not None else order.price
                 line = f'{i}. {order.stock} {order.action_type.value} {order.action.value} ${price} {order.quantity} {order.filled_quantity}/{order.quantity} {order.status.value}'
                 output.append(line)
             msg = '\n'.join(output)
