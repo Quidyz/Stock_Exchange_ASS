@@ -16,7 +16,7 @@ def test_full_scenario(capsys):
     # 2. BUY FB MKT 20
     parser.trade_command("BUY", ["FB", "MKT", "20"])
     out = capsys.readouterr().out.strip().splitlines()
-    assert out[-1] == "Вы разместили рыночную заявку на покупку 20 акций FB."
+    assert out[-1] == "Рыночная заявка отменена: не исполнено 20 из 20 акций FB."
 
     # 3. SELL FB LMT $20.00 20
     parser.trade_command("SELL", ["FB", "LMT", "$20.00", "20"])
@@ -37,7 +37,7 @@ def test_full_scenario(capsys):
     parser.view_command("VIEW", ["ORDERS"])
     out = capsys.readouterr().out.strip().splitlines()
     assert out[-5] == "1. SNAP LMT BUY $30.0 100 20/100 PARTIAL"
-    assert out[-4] == "2. FB MKT BUY $None 20 0/20 CANCELLED"
+    assert out[-4] == "2. FB MKT BUY — 20 0/20 CANCELLED"
     assert out[-3] == "3. FB LMT SELL $20.0 20 0/20 PENDING"
     assert out[-2] == "4. SNAP LMT SELL $30.0 20 20/20 FILLED"
     assert out[-1] == "5. SNAP LMT SELL $31.0 10 0/10 PENDING"

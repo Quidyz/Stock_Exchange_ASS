@@ -1,5 +1,5 @@
 from src.exchange import Exchange
-from src.order import Order, ActionType, OrderType
+from src.order import Order, ActionType, OrderType, OrderStatus
 
 class Parser:
     """Парсинг входных данных и передача в главный орган"""
@@ -51,7 +51,12 @@ class Parser:
             order = self.core.place_order(action_enum, stock, action_type, price, quantity)
             print(order.action, order.stock, order.action_type, order.price, order.quantity)
             buy_type = "покупку" if order.action == OrderType.BUY else "продажу"
-            if action_type == ActionType.LIMIT:
+            if order.status == OrderStatus.CANCELLED:
+                msg = (
+                    f"Рыночная заявка отменена: не исполнено "
+                    f"{order.get_quantity()} из {order.quantity} акций {order.stock}."
+                )
+            elif action_type == ActionType.LIMIT:
                 msg = f"Вы разместили лимитную заявку на {buy_type} {order.quantity} акций {order.stock} по цене ${order.price} за штуку."
             else:
                 msg = f"Вы разместили рыночную заявку на {buy_type} {order.quantity} акций {order.stock}."
@@ -87,8 +92,13 @@ class Parser:
                 return
 
             for i, order in enumerate(sorted_list, 1):
-                price = order.execution_price if order.execution_price is not None else order.price
-                line = f'{i}. {order.stock} {order.action_type.value} {order.action.value} ${price} {order.quantity} {order.filled_quantity}/{order.quantity} {order.status.value}'
+                if order.execution_price is not None:
+                    price = f"${order.execution_price}"
+                elif order.price is not None:
+                    price = f"${order.price}"
+                else:
+                    price = "—"
+                line = f'{i}. {order.stock} {order.action_type.value} {order.action.value} {price} {order.quantity} {order.filled_quantity}/{order.quantity} {order.status.value}'
                 output.append(line)
             msg = '\n'.join(output)
             print(msg)
